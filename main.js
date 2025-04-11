@@ -23,23 +23,29 @@ const mystery5 = [4, 9, 1, 3, 5, 4, 0, 4, 6, 3, 0, 7, 2, 5, 2, 3]
 const batch = [valid1, valid2, valid3, valid4, valid5, invalid1, invalid2, invalid3, invalid4, invalid5, mystery1, mystery2, mystery3, mystery4, mystery5]
 
 
-// Add your functions below:
-
+//Uses Luhn algorithm to check if card is valid
 const validateCred = arr =>{
     let total = 0;
     let mult = false;
 
+    //goes through the array backwords multiplies every other number by 2
     for (let i = arr.length - 1; i >= 0; i--) {
+        if(arr[i] < 0){
+            arr[i] *= -1;
+        }
         let currVal = arr[i];
-    
+
+        //Checks if the number should be multiplied
         if (mult) {
           currVal *= 2;
+          //if currVall is greater then 9 we need to subtract it by 9
           if (currVal > 9) currVal -= 9;
         }
-    
+
         total += currVal;
         mult = !mult;
     }
+    //If total is mod 10 then we know this card is valid else return false
     if(total % 10 === 0){
         return true;
     }
@@ -48,75 +54,81 @@ const validateCred = arr =>{
     }
 }
 
-const findInvalidCards = nestedArray =>{
+//uses invalidCards to make a new nested array of only invalid cards
+const findInvalidCards = arr =>{
     let invalidCards = [];
 
-    nestedArray.forEach(card => {
-        if(validateCred(card) === false){
-            invalidCards.push(card)
+    //checks if arr is a nested array 
+    if(Array.isArray(arr) && arr.some(item => Array.isArray(item))){
+        arr.forEach(card => {
+            if(validateCred(card) === false){
+                invalidCards.push(card);
+            }
+        })
+    }else{
+        if(validateCred(arr) === false){
+            return arr;
         }
-    })
+    }
     return invalidCards;
 }
 
-const idInvalidCardCompanies = nestedAray =>{
-    let badCards = findInvalidCards(nestedAray);
+//looks at the first index of an array to find which company invalid cards belongs to
+//uses Set to deal with possible duplications
+const idInvalidCardCompanies = arr =>{
+    let badCards = findInvalidCards(arr);
     let companies = new Set();
 
-    badCards.forEach(card => {
-        switch (card[0]) {
-            case 3:
-                companies.add("Amex (American Express)")
-                break;
-                /*
-                if(companies.includes("Amex (American Express)")){
-                    break;
+    //if all card numbers are valid then badCards will equal 0
+    if(badCards.length > 0){
+        //checks if arr is a nested array 
+        if(Array.isArray(arr) && arr.some(item => Array.isArray(item))){
+            badCards.forEach(card => {
+                switch (card[0]) {
+                    case 3:
+                        companies.add("Amex (American Express)")
+                        break;
+                    case 4: 
+                        companies.add("Visa")
+                        break;
+                    case 5:
+                        companies.add("Mastercard")
+                        break;
+                    case 6:
+                        companies.add("Discover")
+                        break;
+                    default:
+                        console.log('Company not found')
                 }
-                else{  
-                    companies.push("Amex (American Express)");
+            })
+        }else{
+            switch (badCards[0]) {
+                case 3:
+                    companies.add("Amex (American Express)")
                     break;
-                }
-                */
-            case 4: 
-                companies.add("Visa")
-                break;
-                /*
-                if(companies.includes("Visa")){
+                case 4: 
+                    companies.add("Visa")
                     break;
-                }else{
-                    companies.push("Visa");
+                case 5:
+                    companies.add("Mastercard")
                     break;
-                }
-                */
-            case 5:
-                companies.add("Mastercard")
-                break;
-                /*
-                if(companies.includes("Mastercard")){
+                case 6:
+                    companies.add("Discover")
                     break;
-                }else{
-                    companies.push("Mastercard")
-                    break;
-                }
-                */
-            case 6:
-                companies.add("Discover")
-                break;
-                /*
-                if(companies.includes("Discover")){
-                    break;
-                }else{
-                    companies.push("Discover")
-                    break;
-                }
-                */
-            default:
-                console.log('Company not found')
+                default:
+                    console.log('Company not found')
+            }
         }
-    })
+}
     return companies
 }
 
-cons
+//split a given string into newCard array and finds if it's valid
+const createCardArray = cardString =>{
+    let newCard = cardString.split("").map(Number);
+    return idInvalidCardCompanies(newCard);
+}
+
 
 console.log(idInvalidCardCompanies(batch));
+console.log(createCardArray("4539404967869666"))
