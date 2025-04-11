@@ -1,5 +1,5 @@
-This is a simple test file that checks if a given credit card number is valid or invalid. Companies linked the an invalid card are then listed and can be contacted. 
+This is a simple test file that checks if a given credit card number is valid or invalid by using the Luhn algorithm. Companies linked to an invalid card are then listed and can be contacted. 
 
-Test could be run individual cards by calling validateCred or can call a nested array of card numbers as well by calling idInvalidCardCompanies. 
+Results are returned as a Set to avoid duplications.
 
-Results and be printed as an array or as a set depending on preference. 
+Users can send individual arrays, nested arrays, or even a string of numbers to be tested. 
